@@ -34,6 +34,8 @@ public class ProceduralRoomGenerator : MonoBehaviour
     public Transform dynamicTileContainer;
     public Transform floorTileParent;
 
+    public EnemySpawner enemySpawner;
+
     void Start()
     {
         GenerateRoom();
@@ -46,7 +48,6 @@ public class ProceduralRoomGenerator : MonoBehaviour
 
         grid = new TileType[width, height];
 
-        // Fill grid with floor
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -59,8 +60,15 @@ public class ProceduralRoomGenerator : MonoBehaviour
         ReserveDoorZone(3, height - 3);  // Bottom
 
         GenerateGuaranteedPath();
-        PlaceObstacles(20);
+        PlaceObstacles(obstacles);
         SpawnTiles();
+
+        if (enemySpawner != null)
+        {
+            enemySpawner.tilePositions = GetCurrentTilePositions();
+            enemySpawner.SetGrid(grid);
+            enemySpawner.SpawnEnemies();
+        }
     }
 
     void ReserveDoorZone(int startX, int startY)

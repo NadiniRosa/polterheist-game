@@ -18,10 +18,11 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (other.CompareTag("Enemy"))
-        //{
-        //    Debug.Log("Hit enemy for " + damage + " damage!");
-        //}
+        if (other.CompareTag("Enemy"))
+        {
+            EnemyTracker.Unregister(other.gameObject);
+            Destroy(other.gameObject);
+        }
 
         Destroy(gameObject);
     }

@@ -173,7 +173,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      HUD Frame Level_0: 1223609372345978219
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

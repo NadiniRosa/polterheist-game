@@ -173,7 +173,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      HUD Frame Balas_0: -7626736239612414781
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

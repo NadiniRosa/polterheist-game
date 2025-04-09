@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 4b2e8a26dda481749993177b1df2333a
+guid: 7c38e5d4b22b10843a7d9b01f3968557
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1802864610562922728
-    second: HUD Bala Vazia_0
+      213: -6839180984600591390
+    second: spr_PlayerBullet_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HUD Bala Vazia_0
+      name: spr_PlayerBullet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 28
-        height: 28
+        x: 26
+        y: 17
+        width: 20
+        height: 38
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 817264d4030faf6e0800000000000000
-      internalID: -1802864610562922728
+      spriteID: 2e3864a41295611a0800000000000000
+      internalID: -6839180984600591390
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HUD Bala Vazia_0: -1802864610562922728
+      spr_PlayerBullet_0: -6839180984600591390
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

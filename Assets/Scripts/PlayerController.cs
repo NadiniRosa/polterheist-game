@@ -138,7 +138,10 @@ public class TopDownPlayerController : MonoBehaviour
 
         if (other.CompareTag("DoorTile") && !justTeleported)
         {
-            RegenerateRoomAndRespawn();
+            if (EnemyTracker.AllEnemiesDefeated())
+            {
+                RegenerateRoomAndRespawn();
+            }
         }
     }
 

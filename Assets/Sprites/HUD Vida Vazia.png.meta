@@ -173,7 +173,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      HUD Vida Vazia_0: -8699899660799065934
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

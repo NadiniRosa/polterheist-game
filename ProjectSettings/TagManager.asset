@@ -9,6 +9,7 @@ TagManager:
   - TrapTile
   - WallTile
   - DoorTile
+  - Enemy
   layers:
   - Default
   - TransparentFX

@@ -173,7 +173,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      HUD Bala Cheia_0: -3224789190563753585
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
