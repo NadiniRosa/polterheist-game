@@ -30,8 +30,9 @@ public class ProceduralRoomGenerator : MonoBehaviour
 
     private HashSet<Vector2Int> reservedPathTiles = new HashSet<Vector2Int>();
     private List<GameObject> spawnedTiles = new List<GameObject>();
-
+    
     public Transform dynamicTileContainer;
+    public Transform floorTileParent;
 
     void Start()
     {
@@ -41,6 +42,7 @@ public class ProceduralRoomGenerator : MonoBehaviour
     public void GenerateRoom()
     {
         ClearPreviousRoom();
+        reservedPathTiles.Clear();
 
         grid = new TileType[width, height];
 
@@ -109,15 +111,17 @@ public class ProceduralRoomGenerator : MonoBehaviour
 
     void SpawnTiles()
     {
+        Transform[] tilePositions = GetCurrentTilePositions();
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                Transform[] tilePositions = GetCurrentTilePositions();
                 int index = y * width + x;
                 if (index >= tilePositions.Length) continue;
 
                 Vector3 pos = tilePositions[index].position;
+
                 GameObject prefabToSpawn = null;
 
                 switch (grid[x, y])
@@ -140,6 +144,7 @@ public class ProceduralRoomGenerator : MonoBehaviour
             }
         }
     }
+
 
     void ClearPreviousRoom()
     {
@@ -192,10 +197,10 @@ public class ProceduralRoomGenerator : MonoBehaviour
 
     Transform[] GetCurrentTilePositions()
     {
-        return GameObject.FindGameObjectsWithTag("FloorTile")
-            .OrderByDescending(go => go.transform.position.y)
-            .ThenBy(go => go.transform.position.x)
-            .Select(go => go.transform)
+        return floorTileParent.GetComponentsInChildren<Transform>()
+            .Where(t => t != floorTileParent) // exclude the parent itself
+            .OrderByDescending(t => t.position.y)
+            .ThenBy(t => t.position.x)
             .ToArray();
     }
 }
