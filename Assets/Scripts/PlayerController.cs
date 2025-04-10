@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -57,6 +58,16 @@ public class TopDownPlayerController : MonoBehaviour
 
     public Transform bulletContainer;
 
+    [Header("Audio")]
+    public AudioClip damageClip;
+    public AudioClip dieClip;
+
+    private AudioSource audioSource;
+
+    [Header("Level Info")]
+    public int currentLevel = 1;
+    public TextMeshProUGUI levelText;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -66,6 +77,7 @@ public class TopDownPlayerController : MonoBehaviour
         
         UpdateAmmoUI();
         UpdateHealthUI();
+        UpdateLevelUI();
     }
 
     void Update()
@@ -149,13 +161,14 @@ public class TopDownPlayerController : MonoBehaviour
     {
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        
         UpdateHealthUI();
-
-        Debug.Log("Player HP: " + currentHealth);
+        PlaySound(damageClip);
 
         if (currentHealth <= 0)
         {
             Die();
+            PlaySound(dieClip);
         }
     }
 
@@ -178,6 +191,9 @@ public class TopDownPlayerController : MonoBehaviour
             transform.position = spawnPoint.position;
             controller.enabled = true;
         }
+
+        currentLevel++;
+        UpdateLevelUI();
 
         justTeleported = true;
         teleportTimer = teleportCooldown;
@@ -221,6 +237,24 @@ public class TopDownPlayerController : MonoBehaviour
         for (int i = 0; i < ammoIcons.Length; i++)
         {
             ammoIcons[i].sprite = i < currentAmmo ? fullBullet : emptyBullet;
+        }
+    }
+
+    void UpdateLevelUI()
+    {
+        if (levelText != null)
+        {
+            levelText.text = "Level " + currentLevel;
+        }
+    }
+    #endregion
+
+    #region Audio
+    void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
         }
     }
     #endregion
