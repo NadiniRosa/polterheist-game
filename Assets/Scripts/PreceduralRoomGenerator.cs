@@ -206,7 +206,7 @@ public class ProceduralRoomGenerator : MonoBehaviour
     Transform[] GetCurrentTilePositions()
     {
         return floorTileParent.GetComponentsInChildren<Transform>()
-            .Where(t => t != floorTileParent) // exclude the parent itself
+            .Where(t => t != floorTileParent)
             .OrderByDescending(t => t.position.y)
             .ThenBy(t => t.position.x)
             .ToArray();

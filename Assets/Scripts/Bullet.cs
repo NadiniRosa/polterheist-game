@@ -21,6 +21,14 @@ public class Bullet : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             EnemyTracker.Unregister(other.gameObject);
+
+            EnemyDrop drop = other.GetComponent<EnemyDrop>();
+            
+            if (drop != null)
+            {
+                drop.DropItems();
+            }
+
             Destroy(other.gameObject);
         }
 

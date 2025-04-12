@@ -10,6 +10,10 @@ public class TrapToggle : MonoBehaviour
     [SerializeField] private Sprite trapInactiveSprite;
     [SerializeField] private Sprite trapActiveSprite;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip trapClip;
+    private AudioSource audioSource;
+
     private SpriteRenderer spriteRenderer;
     private Collider trapCollider;
 
@@ -17,6 +21,7 @@ public class TrapToggle : MonoBehaviour
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         trapCollider = GetComponent<Collider>();
 
@@ -57,7 +62,13 @@ public class TrapToggle : MonoBehaviour
             spriteRenderer.sprite = active ? trapActiveSprite : trapInactiveSprite;
 
         Rigidbody rb = GetComponent<Rigidbody>();
+
         if (rb != null)
+        {
+            if (audioSource != null && trapClip != null)
+                audioSource.PlayOneShot(trapClip);
+
             rb.detectCollisions = active;
+        }
     }
 }

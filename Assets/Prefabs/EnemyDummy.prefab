@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2796201976342511837}
   - component: {fileID: 4569087643816496425}
   - component: {fileID: 65637175004642009}
+  - component: {fileID: 7331426260705729347}
   m_Layer: 0
   m_Name: EnemyDummy
   m_TagString: Enemy
@@ -137,3 +138,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7331426260705729347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8284659351024437847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c01f76e857424a24e854850d4b5d6175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  commonDrops:
+  - {fileID: 7721701104303469089, guid: 5dfc4f6fad394654690083587a6d89dd, type: 3}
+  - {fileID: 7357775255737585711, guid: 864e45de17527c6449e12d6e8a5a1fa9, type: 3}
+  - {fileID: 1179997785884251116, guid: caf14ef6f5be8ed4f9a6e5f4228a4e6e, type: 3}
+  rareDrops:
+  - {fileID: 7602183187792098117, guid: ee089d7b9c8c76249ac4a10128fd4bf0, type: 3}
+  - {fileID: 6208076478079798280, guid: 9d85cbd25bdec324896cb87f55b61797, type: 3}
+  rareDropChance: 0.2

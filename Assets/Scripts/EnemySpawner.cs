@@ -4,7 +4,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
     public GameObject objectToSpawn;
-    public int spawnCount = 2;
+    [HideInInspector] public int spawnCount;
 
     public Vector2Int gridSize = new Vector2Int(10, 13);
     public Transform[] tilePositions;
@@ -15,6 +15,8 @@ public class EnemySpawner : MonoBehaviour
         if (objectToSpawn == null || tilePositions == null || tilePositions.Length == 0 || grid == null)
             return;
 
+        spawnCount = Random.Range(2, 6);
+
         int width = grid.GetLength(0);
         int height = grid.GetLength(1);
 
@@ -24,7 +26,6 @@ public class EnemySpawner : MonoBehaviour
         while (spawned < spawnCount && attempts < 100)
         {
             int index = Random.Range(0, tilePositions.Length);
-
             Transform tile = tilePositions[index];
 
             if (tile == null) { attempts++; continue; }

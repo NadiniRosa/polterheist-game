@@ -1,6 +1,8 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -61,6 +63,9 @@ public class TopDownPlayerController : MonoBehaviour
     [Header("Audio")]
     public AudioClip damageClip;
     public AudioClip dieClip;
+    public AudioClip gunReloadingClip;
+    public AudioClip gunShotClip;
+    public AudioClip dropCollectedClip;
 
     private AudioSource audioSource;
 
@@ -68,9 +73,24 @@ public class TopDownPlayerController : MonoBehaviour
     public int currentLevel = 1;
     public TextMeshProUGUI levelText;
 
+    public ScreenTransitions screenTransition;
+
+    [Header("GameOver")]
+    public GameObject gameOverCanvas;
+    public TextMeshProUGUI finalScore;
+    private bool isDead = false;
+
+    private Animator animator;
+
+    [Header("Score")]
+    public int currentScore = 0;
+    public TextMeshProUGUI scoreText;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        audioSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
 
         currentHealth = maxHealth;
         currentAmmo = maxAmmo;
@@ -78,14 +98,20 @@ public class TopDownPlayerController : MonoBehaviour
         UpdateAmmoUI();
         UpdateHealthUI();
         UpdateLevelUI();
+        UpdateScoreUI();
     }
 
     void Update()
     {
+        if (isDead)
+            return;
+
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
         moveDirection = new Vector3(h, v, 0).normalized;
+        animator.SetBool("IsWalking", moveDirection.magnitude > 0);
+
         controller.Move(moveDirection * moveSpeed * Time.deltaTime);
 
         if (justTeleported)
@@ -107,7 +133,9 @@ public class TopDownPlayerController : MonoBehaviour
             {
                 if (playerSprite != null)
                 {
-                    playerSprite.enabled = !playerSprite.enabled;
+                    Color color = playerSprite.color;
+                    color.a = color.a == 1f ? 0f : 1f;
+                    playerSprite.color = color;
                 }
                 blinkTimer = blinkInterval;
             }
@@ -139,6 +167,9 @@ public class TopDownPlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (isDead)
+            return;
+
         if (other.CompareTag("TrapTile") && !isInvincible)
         {
             TakeDamage(1);
@@ -155,6 +186,21 @@ public class TopDownPlayerController : MonoBehaviour
                 RegenerateRoomAndRespawn();
             }
         }
+
+        if (other.CompareTag("Drop"))
+        {
+            DropItem drop = other.GetComponent<DropItem>();
+
+            if (drop != null)
+            {
+                int gainedScore = drop.dropType == DropItem.DropType.Rare ? drop.rareScore : drop.commonScore;
+                currentScore += gainedScore;
+                UpdateScoreUI();
+                audioSource.PlayOneShot(dropCollectedClip);
+            }
+
+            Destroy(other.gameObject);
+        }
     }
 
     void TakeDamage(int amount)
@@ -163,40 +209,59 @@ public class TopDownPlayerController : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         
         UpdateHealthUI();
-        PlaySound(damageClip);
+        audioSource.PlayOneShot(damageClip);
 
         if (currentHealth <= 0)
         {
             Die();
-            PlaySound(dieClip);
         }
     }
 
     void Die()
     {
-        Debug.Log("PLAYER DIED!");
-        // TODO: Add game over or respawn logic
+        isDead = true;
+        audioSource.PlayOneShot(dieClip);
+        animator.SetBool("IsDead", true);
+        
+        finalScore.text = "Score: " + currentScore;
+        gameOverCanvas.SetActive(true);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(0);
     }
 
     void RegenerateRoomAndRespawn()
     {
-        if (roomGenerator != null)
+        void DoRegeneration()
         {
-            roomGenerator.GenerateRoom();
-        }
+            roomGenerator?.GenerateRoom();
 
-        if (spawnPoint != null)
-        {
-            controller.enabled = false;
-            transform.position = spawnPoint.position;
-            controller.enabled = true;
-        }
+            if (spawnPoint != null)
+            {
+                controller.enabled = false;
+                transform.position = spawnPoint.position;
+                controller.enabled = true;
+            }
 
-        currentLevel++;
-        UpdateLevelUI();
+            currentLevel++;
+            UpdateLevelUI();
+
+            screenTransition?.StartShrink();
+        }
 
         justTeleported = true;
         teleportTimer = teleportCooldown;
+
+        if (screenTransition != null)
+        {
+            screenTransition.StartExpand(DoRegeneration);
+        }
+        else
+        {
+            DoRegeneration();
+        }
     }
 
     #region Shooting
@@ -204,20 +269,32 @@ public class TopDownPlayerController : MonoBehaviour
     {
         currentAmmo--;
         UpdateAmmoUI();
+        audioSource.PlayOneShot(gunShotClip);
 
         if (bulletPrefab != null && gunMuzzle != null)
         {
-            Instantiate(bulletPrefab, gunMuzzle.position, gunMuzzle.rotation, bulletContainer);
+            GameObject bullet = Instantiate(bulletPrefab, gunMuzzle.position, gunMuzzle.rotation, bulletContainer);
+
+            Collider bulletCol = bullet.GetComponent<Collider>();
+            Collider playerCol = GetComponent<Collider>();
+
+            if (bulletCol != null && playerCol != null)
+            {
+                Physics.IgnoreCollision(bulletCol, playerCol);
+            }
         }
     }
 
     IEnumerator Reload()
     {
         isReloading = true;
-        Debug.Log("Reloading...");
+        audioSource.PlayOneShot(gunReloadingClip);
+
         yield return new WaitForSeconds(reloadTime);
+
         currentAmmo = maxAmmo;
         UpdateAmmoUI();
+
         isReloading = false;
     }
 
@@ -247,14 +324,12 @@ public class TopDownPlayerController : MonoBehaviour
             levelText.text = "Level " + currentLevel;
         }
     }
-    #endregion
 
-    #region Audio
-    void PlaySound(AudioClip clip)
+    void UpdateScoreUI()
     {
-        if (audioSource != null && clip != null)
+        if (scoreText != null)
         {
-            audioSource.PlayOneShot(clip);
+            scoreText.text = currentScore.ToString();
         }
     }
     #endregion
