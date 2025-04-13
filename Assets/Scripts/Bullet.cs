@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -23,15 +24,22 @@ public class Bullet : MonoBehaviour
             EnemyTracker.Unregister(other.gameObject);
 
             EnemyDrop drop = other.GetComponent<EnemyDrop>();
-            
             if (drop != null)
             {
                 drop.DropItems();
             }
 
-            Destroy(other.gameObject);
-        }
+            GhostOne ghost = other.GetComponent<GhostOne>();
+            if (ghost != null)
+            {
+                ghost.Die();
+            }
+            else
+            {
+                Destroy(other.gameObject);
+            }
 
-        Destroy(gameObject);
+            Destroy(gameObject);
+        }
     }
 }

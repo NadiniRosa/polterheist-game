@@ -170,7 +170,7 @@ public class TopDownPlayerController : MonoBehaviour
         if (isDead)
             return;
 
-        if (other.CompareTag("TrapTile") && !isInvincible)
+        if (other.CompareTag("TrapTile") || other.CompareTag("Enemy") && !isInvincible)
         {
             TakeDamage(1);
 
@@ -203,7 +203,7 @@ public class TopDownPlayerController : MonoBehaviour
         }
     }
 
-    void TakeDamage(int amount)
+    public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
